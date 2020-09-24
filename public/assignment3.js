@@ -198,7 +198,7 @@ const addRectangle = (center) => {
   const rectangle = {
     type: RECTANGLE,
     position: {
-      "x": x,
+      x: x,
       y: y
     },
     dimensions: {
