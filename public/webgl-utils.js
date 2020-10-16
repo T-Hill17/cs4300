@@ -11,6 +11,16 @@ const webglUtils = {
     rgb.blue /= 256
     return rgb
   },
+  componentToHex: (c) => {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+  },
+  rgbToHex: (rgb) => {
+    const redHex = webglUtils.componentToHex(rgb.red * 256)
+    const greenHex = webglUtils.componentToHex(rgb.green * 256)
+    const blueHex = webglUtils.componentToHex(rgb.blue * 256)
+    return `#${redHex}${greenHex}${blueHex}`
+  },
   createProgramFromScripts: (gl, vertexShaderElementId, fragmentShaderElementId) => {
     // Get the strings for our GLSL shaders
     const vertexShaderSource   = document.querySelector(vertexShaderElementId).text;
@@ -32,15 +42,5 @@ const webglUtils = {
     gl.linkProgram(program);
 
     return program
-  },
-  componentToHex: (c) => {
-	var hex = c.toString(16);
-	return hex.length == 1 ? "0" + hex : hex;
-  },
-  rgbToHex: (rgb) => {
-	const redHex = webglUtils.componentToHex(rgb.red * 256)
-	const greenHex = webglUtils.componentToHex(rgb.green * 256)
-	const blueHex = webglUtils.componentToHex(rgb.blue * 256)
-	return `#${redHex}${greenHex}${blueHex}`
   }
 }
