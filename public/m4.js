@@ -216,6 +216,43 @@ const m4 = {
         (tmp_20 * m12 + tmp_23 * m22 + tmp_17 * m02))
     ];
   },
+  
+  transpose: (m) => {
+    const m00 = m[0 * 4 + 0];
+    const m01 = m[0 * 4 + 1];
+    const m02 = m[0 * 4 + 2];
+    const m03 = m[0 * 4 + 3];
+    const m10 = m[1 * 4 + 0];
+    const m11 = m[1 * 4 + 1];
+    const m12 = m[1 * 4 + 2];
+    const m13 = m[1 * 4 + 3];
+    const m20 = m[2 * 4 + 0];
+    const m21 = m[2 * 4 + 1];
+    const m22 = m[2 * 4 + 2];
+    const m23 = m[2 * 4 + 3];
+    const m30 = m[3 * 4 + 0];
+    const m31 = m[3 * 4 + 1];
+    const m32 = m[3 * 4 + 2];
+    const m33 = m[3 * 4 + 3];
+
+    return [m00,
+      m10,
+      m20,
+      m30,
+      m01,
+      m11,
+      m21,
+      m31,
+      m02,
+      m12,
+      m22,
+      m32,
+      m03,
+      m13,
+      m23,
+      m33]
+
+  },
 
   vectorMultiply: (v, m) => {
     let dst = [];
@@ -227,10 +264,6 @@ const m4 = {
     }
     return dst;
   },
-
-  radToDeg: (radians) => radians * 180 / Math.PI,
-
-  degToRad: (degrees) => degrees * Math.PI / 180,
 
   lookAt: (cameraPosition, target, up) => {
     var zAxis = m4.normalize(

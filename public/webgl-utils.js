@@ -11,6 +11,11 @@ const webglUtils = {
     rgb.blue /= 256
     return rgb
   },
+ 
+  radToDeg: (radians) => radians * 180 / Math.PI,
+
+  degToRad: (degrees) => degrees * Math.PI / 180,
+  
   componentToHex: (c) => {
     var hex = c.toString(16);
     return hex.length == 1 ? "0" + hex : hex;
@@ -47,8 +52,14 @@ const webglUtils = {
 
     return program
   },
+  
+  toggleLookAt: (event) => {
+    lookAt = event.target.checked
+    render()
+  },
+  
   updateCameraAngle: (event) => {
-    cameraAngleRadians = m4.degToRad(event.target.value);
+    cameraAngleRadians = webglUtils.degToRad(event.target.value);
     render();
   },
   updateLookUp: (event) => {
@@ -56,7 +67,7 @@ const webglUtils = {
     render();
   },
   updateFieldOfView: (event) => {
-    fieldOfViewRadians = m4.degToRad(event.target.value);
+    fieldOfViewRadians = webglUtils.degToRad(event.target.value);
     render();
   },
   updateTranslation: (event, axis) => {
@@ -88,6 +99,10 @@ const webglUtils = {
   updateLookAtTranslation: (event, index) => {
     target[index] = event.target.value
     render();
+  },
+  updateLightDirection: (event, index) => {
+    lightSource[index] = parseFloat(event.target.value)
+    render()
   },
   addShape: (newShape, type) => {
     const colorHex = document.getElementById("color").value
@@ -130,7 +145,7 @@ const webglUtils = {
     document.getElementById("rx").value = shapes[selectedIndex].rotation.x
     document.getElementById("ry").value = shapes[selectedIndex].rotation.y
     document.getElementById("rz").value = shapes[selectedIndex].rotation.z
-    document.getElementById("fv").value = m4.radToDeg(fieldOfViewRadians)
+    document.getElementById("fv").value = webglUtils.radToDeg(fieldOfViewRadians)
     const hexColor = webglUtils.rgbToHex(shapes[selectedIndex].color)
     document.getElementById("color").value = hexColor
   },
@@ -164,6 +179,18 @@ const webglUtils = {
     ]
     const float32Array = new Float32Array(geometry)
     gl.bufferData(gl.ARRAY_BUFFER, float32Array, gl.STATIC_DRAW)
+	
+	var normals = new Float32Array([
+      0,0, 1,  0,0, 1,  0,0, 1,    0,0, 1,  0,0, 1,  0,0, 1,
+      0,0,-1,  0,0,-1,  0,0,-1,    0,0,-1,  0,0,-1,  0,0,-1,
+      0,-1,0,  0,-1,0,  0,-1,0,    0,-1,0,  0,-1,0,  0,-1,0,
+      0, 1,0,  0, 1,0,  0, 1,0,    0, 1,0,  0, 1,0,  0, 1,0,
+     -1, 0,0, -1, 0,0, -1, 0,0,   -1, 0,0, -1, 0,0, -1, 0,0,
+      1, 0,0,  1, 0,0,  1, 0,0,    1, 0,0,  1, 0,0,  1 ,0,0,
+    ]);
+    gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, normals, gl.STATIC_DRAW);
+	
     var primitiveType = gl.TRIANGLES;
     gl.drawArrays(gl.TRIANGLES, 0, 6 * 6);
   },
@@ -274,25 +301,5 @@ const webglUtils = {
     gl.bufferData(gl.ARRAY_BUFFER, float32Array, gl.STATIC_DRAW)
     var primitiveType = gl.TRIANGLES;
     gl.drawArrays(gl.TRIANGLES, 0, 16 * 6);
-  },
-  
-  toggleLookAt: (event) => {
-    lookAt = event.target.checked
-    render()
-  },
-
-  updateLookAtTranslation: (event, index) => {
-    target[index] = event.target.value
-    render()
-  },
-
-  updateCameraTranslation: (event, axis) => {
-    camera.translation[axis] = event.target.value
-    render()
-  },
-
-  updateCameraRotation: (event, axis) => {
-    camera.rotation[axis] = event.target.value
-    render()
   },
 }
